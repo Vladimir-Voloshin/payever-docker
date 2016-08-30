@@ -1,0 +1,27 @@
+Payever\TestBundle\Entity\Album:
+    type: entity
+    table: albums
+    repositoryClass: Payever\TestBundle\Repository\AlbumRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        albumName:
+            type: string
+            length: 255
+            column: album_name
+        created:
+            type: datetime
+        updated:
+            type: datetime
+            nullable: true
+    oneToMany:
+        images:
+            targetEntity: Payever\TestBundle\Entity\Image
+            mappedBy: album
+    lifecycleCallbacks:
+            prePersist: [setCreatedValue]
+            preUpdate:  [setUpdatedValue]
