@@ -6,16 +6,10 @@
             <div id="welcome">
                 <h3><span>Welcome to</span> Payever test</h3>
             </div>
-            <div id="menu"></div>
-            <div id="content"></div>
+            <div class="row">
+                <div class="col-xs-4 col-md-2" id="menu"></div>
+                <div class="col-xs-8 col-md-4" id="content"></div>
+            </div>
         </div>
     </div>
-{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
 {% endblock %}

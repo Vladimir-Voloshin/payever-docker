@@ -17611,7 +17611,7 @@ module.exports = new imagesCollection();
 },{"backbone":4}],17:[function(require,module,exports){
 var html;
 
-html = '<div id="images-content"> <div id="images-navigation"></div> <div id="images-list"></div> </div>';
+html = '<div id="images-content"> <div class="btn-toolbar" role="toolbar" id="images-navigation"></div> <div id="images-list"></div> </div>';
 
 module.exports = html;
 
@@ -17619,7 +17619,7 @@ module.exports = html;
 },{}],18:[function(require,module,exports){
 var html;
 
-html = '<div id="navButtons"> <div id="scrollBack" class="button<% if (firstPage) { %> hidden<%}%>">back </div> <div id="scrollForward" class="button<% if (lastPage) { %> hidden<%}%>">forward</div> <% for(var i = 1; i <= totalPages; i++){ %> <div id="pageButton" page="<%- i%>" class="button pageButton<% if (currentPos === i) { %> current<%}%>"><%- i%></div> <% } %> </div>';
+html = '<div class="btn-group" role="group" id="navButtons" > <div id="scrollBack" class="button btn btn-default<% if (firstPage) { %> hidden<%}%>">back </div> <div id="scrollForward" class="button btn btn-default<% if (lastPage) { %> hidden<%}%>">forward</div> <% for(var i = 1; i <= totalPages; i++){ %> <div id="pageButton" page="<%- i%>" class="button btn btn-default pageButton<% if (currentPos === i) { %> active<%}%>"><%- i%></div> <% } %> </div>';
 
 module.exports = html;
 
@@ -17634,9 +17634,10 @@ ImagesCollection = require('./../collections/imagesCollection.coffee');
 Mn = require("backbone.marionette");
 
 itemsList = Mn.CollectionView.extend({
+  childView: imageRow,
+  className: 'media-list',
   collection: ImagesCollection,
-  tagName: 'ul',
-  childView: imageRow
+  tagName: 'ul'
 });
 
 module.exports = itemsList;
@@ -17650,8 +17651,9 @@ Mn = require("backbone.marionette");
 _und = require("underscore");
 
 albumRaw = Mn.ItemView.extend({
+  className: 'media',
   tagName: 'li',
-  template: _und.template('<img src="./<%- fileName %>" /> <%- fileName %> &mdash; <%- id %>')
+  template: _und.template('<div class="media-left"> <a href="#"><img class="media-object" src="./<%- fileName %>" /></a></div> <div class="media-body"> <h4 class="media-heading"><%- fileName %> &mdash; <%- id %></h4> </div>')
 });
 
 module.exports = albumRaw;

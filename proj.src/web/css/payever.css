@@ -16,7 +16,9 @@ h3 {
   border-style: solid;
   border-width: 1px;
   display: block;
-  width: 300px; }
+  margin: 5px;
+  padding: 5px;
+  width: auto; }
 
 #navButtons {
   color: #00b3ee; }
@@ -35,3 +37,6 @@ h3 {
 
 .hidden {
   display: none; }
+
+#scrollForward {
+  float: right; }

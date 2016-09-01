@@ -1,6 +1,6 @@
 html = '
 <div id="images-content">
-  <div id="images-navigation"></div>
+  <div class="btn-toolbar" role="toolbar" id="images-navigation"></div>
   <div id="images-list"></div>
 </div>'
 

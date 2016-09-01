@@ -3,9 +3,10 @@ ImagesCollection = require('./../collections/imagesCollection.coffee')
 Mn               = require("backbone.marionette")
 
 itemsList = Mn.CollectionView.extend({
+  childView: imageRow,
+  className: 'media-list',
   collection: ImagesCollection,
-  tagName: 'ul',
-  childView: imageRow
+  tagName: 'ul'
 })
 
 module.exports = itemsList

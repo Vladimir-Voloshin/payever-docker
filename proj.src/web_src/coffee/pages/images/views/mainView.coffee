@@ -1,4 +1,4 @@
-_und                = require("underscore")
+_und             = require("underscore")
 blockContent     = require("./imageListView.coffee")
 mainViewTemplate = require("./../templates/mainView.coffee")
 Mn               = require("backbone.marionette")
