@@ -5,10 +5,10 @@ COPY ./wait-for-it.sh /var/www/html
 COPY ./install.sh /var/www/html
 COPY ./000-default.conf /etc/apache2/sites-available
 COPY ./php.ini /usr/local/etc/php/
+COPY ./proj.src/ /var/www/html/payever-ch/
 
 RUN apt-get update && apt-get install -y \
         apt-utils \
-        git \
         vim \
         wget \
         zlib1g-dev
@@ -23,8 +23,6 @@ RUN docker-php-ext-install zip \
     && docker-php-ext-configure mysqli \
     && docker-php-ext-install mysqli \
     && docker-php-ext-install pdo_mysql
-
-RUN git clone -b docker https://496b87e97af5fe2cff43888961ad2bd6e63721da:x-oauth-basic@github.com/Vladimir-Voloshin/payever-ch.git payever-ch/
 
 #enable mod_rewrite and restart apache2
 RUN a2enmod rewrite && service apache2 restart
