@@ -1,10 +1,14 @@
 FROM php:7.0-apache
 MAINTAINER Voloshyn Vladymyr <voloshyn.vladymyr@gmail.com>
 
+#copies file wait-for-it.sh, which holds web application launch till db will be ready
 COPY ./wait-for-it.sh /var/www/html
+#copies file install.sh, which perfoms project install (db migration in this case)
 COPY ./install.sh /var/www/html
+#copies 000-default.conf, which is apache virtual host's config
 COPY ./000-default.conf /etc/apache2/sites-available
 COPY ./php.ini /usr/local/etc/php/
+#copies git submodule's folder (which is https://github.com/Vladimir-Voloshin/payever-ch) proj.src into the docker image
 COPY ./proj.src/ /var/www/html/payever-ch/
 
 RUN apt-get update && apt-get install -y \

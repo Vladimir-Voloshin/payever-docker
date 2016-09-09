@@ -1,72 +1,44 @@
-Config for docker compose
--------------------------
+### Image Layers
+Download size and number of layers.
 
-https://hub.docker.com/r/voloshinvladimir/payever-docker/
+[![](https://images.microbadger.com/badges/image/voloshinvladimir/payever-docker.svg)](https://microbadger.com/images/voloshinvladimir/payever-docker)
 
-Task description
-=================
+You can start web-application (will be available at http://0.0.0.0:888/) using following config for docker-compose:
+```
+version: '2'
+services:
+    db:
+        image: mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: 6633222
+            MYSQL_USER: payever-ch
+            MYSQL_PASSWORD: Fun1tIk
+            MYSQL_DATABASE: payever-ch
+        expose:
+            - "3306/tcp"
+    web:
+        command: ["./install.sh"]
+        image: voloshinvladimir/payever-docker:latest
+        links:
+            - db
+        ports:
+            - "888:80"
+        depends_on:
+            - db
+        entrypoint: ["./wait-for-it.sh", "db:3306", "-t", "120", "--"]
 
-Setup SF2.8 project
- - Test task is Image gallery with simple structure - Album -> Images
- - Albums and images can be loaded from fixtures. Create/edit parts for album and images are NOT required, but welcome
- - Users functionality is NOT needed
+```
 
-We expect:
-5 albums to be loaded
-First album should contain 5 images
-Every other album should contain 20+ images
+### What's happening in the Dockerfile
 
-Ajax GET albums with max 10 images for albums list - we test good skills in SQL
+Generally, Symfony 2.8 project from https://github.com/Vladimir-Voloshin/payever-ch is copied in virtual folder and launched.
 
-Ajax GET images when looking on Album in details
-Images list should contain maximum 10 images
-If album has more than 10 images - pagination should be visible, clicking on the page - images list should be changed. 
-We expect usage of knp paginator bundle and  serializer
+#### Layer-by-layer
+ 
+1. copies file wait-for-it.sh, which holds web application launch till db will be ready
+2. copies file install.sh, which perfoms project install (db migration in this case)
+3. copies 000-default.conf, which is apache virtual host's config
+4. copies php.ini
+5. copies git submodule's folder (which is https://github.com/Vladimir-Voloshin/payever-ch) proj.src into the docker image
 
-The site should be realized in single-page way, driven by Marionette.js with following routes:
-
-‘’ : albums list
-‘/album/:id’ : images list for album with id specified, page 1
-‘/album/:id/page/:page’ : images list for album with id specified, page :page
-
-We expect to see usage of Application, Router, Controller, LayoutVew, CollectionView and ItemView
-
-Each route should be accessible when opening the page having url, means when we open the url in a separate tab - correct content must be loaded
-
-Pages should have a design. Design quality doesn’t matter, we test CSS skills. Any modern decorations are welcome.
-
-Store your code in github/bitbucket!
-Exclude vendors folder from git project, we will install dependencies using composer.lock
-
-We don’t need your gallery, that is just a test task. If you have samples of your code in github or participation  in other opensource projects - please share a link to github code.
-
-
-**Requirements for PHP code:** <br />
-conform http://symfony.com/doc/current/contributing/code/standards.html
-we expect definitive variable names, doc-comments
-we expect thin controllers, the business logic must be placed in separate managers, not controllers.
-also we test where and what do u write. 
-provide phpunit tests, we expect usage of mock objects.
-
-Please don’t be lazy and make easy-to-understand structure, well separated.
-We don’t limit you by time. Provide a well coded project, that’s only thing we require as a result. Please ensure that the code likes at least for you, don’t waste your time otherwise.
-
-
-**Requirements for javascript:** <br />
-has to be written on coffeescript<br />
-
-**Requirements for css:** <br />
-none, but we suggest to write on scss (compass)<br />
-
-We test skills
-----------------
-
-Services self-written, DI
-Repository usage, understanding the difference between controllers and other services
-Data structure, hierarchy, code optimizations
-Git knowledge
-Understanding mysql
-Javascript, jquery, coffee, backbone/marionette skills, understanding ajax
-CSS/SCSS skills
-
-*Please write your code in the way allowing us to test your skills in areas listed.*
+Rest is pretty straigtforward I guess.
