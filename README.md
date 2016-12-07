@@ -43,7 +43,7 @@ Generally, Symfony 2.8 project from https://github.com/Vladimir-Voloshin/payever
 
 Rest is pretty straigtforward I guess.
 
-UPDATE 07.12.2016
+### UPDATE 07.12.2016
 
 Added a ssh-connection possibility. Don't know why. Some people want to ssh to container... ok.
 So,
@@ -79,3 +79,5 @@ services:
             - db
         entrypoint: ["./wait-for-it.sh", "db:3306", "-t", "120", "--"]
 ```
+
+Connection string with this config is ```ssh docker@localhost -p 4949```
