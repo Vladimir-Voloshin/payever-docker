@@ -13,6 +13,8 @@ COPY ./proj.src/ /var/www/html/payever-ch/
 
 RUN apt-get update && apt-get install -y \
         apt-utils \
+        sudo \
+        git \
         vim \
         wget \
         zlib1g-dev
@@ -49,6 +51,30 @@ RUN cd payever-ch && composer update
 #change cache and logs owner
 RUN usermod -u 1000 www-data && cd payever-ch && chown -R www-data:www-data /var/www/html/payever-ch/app/cache && chown -R www-data:www-data /var/www/html/payever-ch/app/logs
 
-#RUN kill -USR1 1
+#Create docker user RUN mkdir -p /var/www
+RUN mkdir -p /home/docker
+RUN useradd -d /home/docker -s /bin/bash -M -N -G www-data,root,sudo docker
+RUN echo 'docker:tool' | chpasswd
+RUN usermod -G www-data,users www-data
+RUN chown -R docker:www-data /var/www
+RUN chown -R docker:www-data /home/docker
 
-CMD ["apachectl", "-DFOREGROUND"]
+#install ssh daemon
+RUN apt-get update && apt-get install -y openssh-server
+RUN mkdir /var/run/sshd
+#permission to login as root... just... let it be here... don't forget to bring a towel(зачеркнуто) set a root password
+RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
+
+# SSH login fix. Otherwise user is kicked off after login
+RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+ENV NOTVISIBLE "in users profile"
+RUN echo "export VISIBLE=now" >> /etc/profile
+
+RUN rm -rf /var/www/html/payever-ch/.git
+COPY ./.git/modules/proj.src/ /var/www/html/payever-ch/.git
+RUN sed -i '/worktree/d' payever-ch/.git/config && cd ./payever-ch/ && git config --global user.email "voloshyn.vladymyr@gmail.com" && git config --global user.name "Voloshyn Vladymyr"
+
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd", "-D"]

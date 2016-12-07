@@ -42,3 +42,40 @@ Generally, Symfony 2.8 project from https://github.com/Vladimir-Voloshin/payever
 5. copies git submodule's folder (which is https://github.com/Vladimir-Voloshin/payever-ch) proj.src into the docker image
 
 Rest is pretty straigtforward I guess.
+
+UPDATE 07.12.2016
+
+Added a ssh-connection possibility. Don't know why. Some people want to ssh to container... ok.
+So,
+there is 'docker' user added with 'tool' password, which can sudo. And you can ssh to it and... pull from github or whatever.
+With docker composer:
+you should change the config file to pass your ssh-keys into container, do you can ```git pull```:
+
+```
+version: '2'
+services:
+    db:
+        image: mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: 6633222
+            MYSQL_USER: payever-ch
+            MYSQL_PASSWORD: Fun1tIk
+            MYSQL_DATABASE: payever-ch
+        expose:
+            - "3306/tcp"
+    web:
+        command: ["./install.sh"]
+        image: voloshinvladimir/payever-docker:latest
+        volumes:
+            - $SSH_AUTH_SOCK:/ssh-agent # Forward local machine SSH key to docker
+        environment:
+            SSH_AUTH_SOCK: /ssh-agent
+        links:
+            - db
+        ports:
+            - "888:80"
+            - "4949:22"
+        depends_on:
+            - db
+        entrypoint: ["./wait-for-it.sh", "db:3306", "-t", "120", "--"]
+```
